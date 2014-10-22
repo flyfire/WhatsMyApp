@@ -15,6 +15,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +47,17 @@ public class MainActivity extends Activity {
         allApps = (ListView) this.findViewById(R.id.allapps);
         noApps = (TextView) this.findViewById(R.id.no_apps);
         getSharedPreferences(PREF_NAME, 0).edit().putBoolean(SHOW_SYS, false).commit();
+        allApps.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               if (null != Api.applications) {
+                SolarexApp app = Api.applications[position];
+                log("OnItemClick app = " + app);
+            } 
+            }
+            
+        });
         log("MainActivity: onCreate exit");
     }
 
@@ -83,14 +97,6 @@ public class MainActivity extends Activity {
     private void showApplications() {
         log("MainActivity: showApplications, enter");
         final SolarexApp[] apps = Api.applications;
-        Arrays.sort(apps, new Comparator<SolarexApp>() {
-
-            @Override
-            public int compare(SolarexApp lhs, SolarexApp rhs) {
-                return lhs.toString().compareTo(rhs.toString());
-            }
-
-        });
 
         if (adapter == null) {
             adapter = new AppAdapter(this, apps);

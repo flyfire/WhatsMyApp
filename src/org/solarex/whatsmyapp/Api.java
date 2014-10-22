@@ -9,6 +9,8 @@ import android.util.Log;
 
 import static org.solarex.whatsmyapp.Utils.log;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,6 +65,14 @@ public class Api {
             }
         }
         applications = map.values().toArray(new SolarexApp[map.size()]);
+        Arrays.sort(applications, new Comparator<SolarexApp>() {
+
+            @Override
+            public int compare(SolarexApp lhs, SolarexApp rhs) {
+                return lhs.toString().compareTo(rhs.toString());
+            }
+
+        });
         for (SolarexApp app2 : applications) {
             log("getApps for uid = " + app2.uid + " begin");
             for (String name2 : app2.names) {
