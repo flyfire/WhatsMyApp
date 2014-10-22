@@ -1,6 +1,7 @@
 
 package org.solarex.whatsmyapp;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
     private AppAdapter adapter = null;
     private String PREF_NAME = "solarex";
     private String SHOW_SYS = "ShowSys";
+    private int index,top;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class MainActivity extends Activity {
                     builder.setIcon(app.cachedIcon);
                     StringBuilder sbBuilder = new StringBuilder();
                     sbBuilder.append(res.getString(R.string.appinfo_name)+app.toString()+"\n");
-                    sbBuilder.append(res.getString(R.string.package_name)+app.pkgInfo.packageName);
+                    sbBuilder.append(res.getString(R.string.package_name)+app.pkgInfo.packageName+"\n");
                     sbBuilder.append(res.getString(R.string.version_name)+app.pkgInfo.versionName);
                     builder.setMessage(sbBuilder.toString());
                     
@@ -133,6 +135,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        index = allApps.getFirstVisiblePosition();
+        View v = allApps.getChildAt(0);
+        top = (v==null)?0:v.getTop();
         log("MainActivity: onPause");
     }
 
@@ -164,6 +169,7 @@ public class MainActivity extends Activity {
             adapter.bindApps(apps);
             allApps.setAdapter(adapter);
         }
+        allApps.setSelectionFromTop(index, top);
         log("MainActivity: showApplications, exit");
     }
 
