@@ -21,7 +21,6 @@ public class SolarexApp {
     public SolarexApp(int uid, String name){
         this.uid = uid;
         this.names = new String[]{name};
-        this.isSys = true;
     }
 
     @Override

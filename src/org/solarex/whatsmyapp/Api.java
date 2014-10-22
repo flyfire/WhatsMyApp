@@ -1,12 +1,10 @@
 
 package org.solarex.whatsmyapp;
 
-import android.R.integer;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import static org.solarex.whatsmyapp.Utils.log;
 
