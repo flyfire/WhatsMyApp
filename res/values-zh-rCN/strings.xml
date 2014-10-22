@@ -4,4 +4,10 @@
     <string name="noapps">尚未安装应用</string>
     <string name="show_sys_no">不显示系统应用</string>
     <string name="show_sys_yes">显示系统应用</string>
+    <string name="show_info">应用详细信息</string>
+    <string name="appinfo_name">应用名称:</string>
+	<string name="package_name">应用包名: </string>
+	<string name="version_name">应用版本名: </string>
+	<string name="start_app">启动应用</string>
+	<string name="uninstall">卸载应用</string>
 </resources>

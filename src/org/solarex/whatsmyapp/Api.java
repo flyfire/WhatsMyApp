@@ -4,6 +4,7 @@ package org.solarex.whatsmyapp;
 import android.R.integer;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
@@ -25,18 +26,16 @@ public class Api {
         }
         final PackageManager pm = ctx.getPackageManager();
         final List<ApplicationInfo> installed = pm.getInstalledApplications(0);
+        final List<PackageInfo> installedPackageInfos = pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES);
         log("Api getApps installed = " + installed);
         final HashMap<Integer, SolarexApp> map = new HashMap<Integer, SolarexApp>();
         String name = null;
         SolarexApp app = null;
+        /*
         for (ApplicationInfo applicationInfo : installed) {
             app = map.get(applicationInfo.uid);
             int isSysApp = applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM;
             log("app = " + app + " isShowSys = " + isShowSys + " isSysApp = " + isSysApp);
-//            if ((app == null) && isShowSys && (isSysApp != 0)) {
-//                log("into continue");
-//                continue;
-//            }
             if (!isShowSys) {
                 if (app == null && (isSysApp != 0)) {
                     continue;
@@ -63,6 +62,45 @@ public class Api {
                 System.arraycopy(app.names, 0, newNames, 0, app.names.length);
                 newNames[app.names.length] = name;
             }
+        }
+        */
+        for (PackageInfo packageInfo : installedPackageInfos) {
+            app = map.get(packageInfo.applicationInfo.uid);
+            int isSysApp = packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM;
+            log("app = " + app + " isShowSys = " + isShowSys + " isSysApp = " + isSysApp);
+            if (!isShowSys) {
+                if (app == null && (isSysApp != 0)) {
+                    continue;
+                }
+            }
+            
+            CharSequence charSequence = pm.getApplicationLabel(packageInfo.applicationInfo);
+            if (null != charSequence) {
+                name = charSequence.toString();
+            } else {
+                name = "Android OS";
+            }
+            
+            if (app == null) {
+                app = new SolarexApp();
+                app.uid = packageInfo.applicationInfo.uid;
+                app.names = new String[] {
+                        name
+                };
+                app.appInfo = packageInfo.applicationInfo;
+                app.pkgInfo = packageInfo;
+                if (isSysApp != 0) {
+                    app.isSys = true;
+                } else {
+                    app.isSys = false;
+                }
+                map.put(packageInfo.applicationInfo.uid, app);
+            } else {
+                final String newNames[] = new String[app.names.length + 1];
+                System.arraycopy(app.names, 0, newNames, 0, app.names.length);
+                newNames[app.names.length] = name;
+            }
+            
         }
         applications = map.values().toArray(new SolarexApp[map.size()]);
         Arrays.sort(applications, new Comparator<SolarexApp>() {

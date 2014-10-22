@@ -2,15 +2,18 @@ package org.solarex.whatsmyapp;
 
 import android.R.integer;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
 
 public class SolarexApp {
     int uid;
     String names[];
     ApplicationInfo appInfo;
+    PackageInfo pkgInfo;
     Drawable cachedIcon;
     String toStr;
     boolean iconLoaded;
+    boolean isSys;
     
     public SolarexApp(){
     }
@@ -18,6 +21,7 @@ public class SolarexApp {
     public SolarexApp(int uid, String name){
         this.uid = uid;
         this.names = new String[]{name};
+        this.isSys = true;
     }
 
     @Override

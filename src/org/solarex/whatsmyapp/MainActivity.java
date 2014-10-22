@@ -2,10 +2,18 @@
 package org.solarex.whatsmyapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.drm.DrmStore.Action;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -51,12 +59,63 @@ public class MainActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               if (null != Api.applications) {
-                SolarexApp app = Api.applications[position];
-                log("OnItemClick app = " + app);
-            } 
+                if (null != Api.applications) {
+                    final SolarexApp app = Api.applications[position];
+                    log("OnItemClick app = " + app);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    Resources res = getResources();
+                    builder.setTitle(res.getString(R.string.show_info));
+                    builder.setIcon(app.cachedIcon);
+                    StringBuilder sbBuilder = new StringBuilder();
+                    sbBuilder.append(res.getString(R.string.appinfo_name)+app.toString()+"\n");
+                    sbBuilder.append(res.getString(R.string.package_name)+app.pkgInfo.packageName);
+                    sbBuilder.append(res.getString(R.string.version_name)+app.pkgInfo.versionName);
+                    builder.setMessage(sbBuilder.toString());
+                    
+                    builder.setPositiveButton(res.getString(R.string.start_app), new DialogInterface.OnClickListener(   ) {
+                        
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            /*
+                            ActivityInfo activityInfo = app.pkgInfo.activities[0];
+                            Intent intent = new Intent();
+                            intent.setComponent(new ComponentName(app.pkgInfo.packageName, activityInfo.name));
+                            */
+                            Intent intent = getPackageManager().getLaunchIntentForPackage(app.pkgInfo.packageName);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            if (intent.resolveActivity(getPackageManager()) != null) {
+                                MainActivity.this.startActivity(intent);
+                            } else {
+                                log("intenet = " + intent + " cant be resolved");
+                            }
+                        }
+                    }); 
+                    builder.setNegativeButton(res.getString(R.string.uninstall), new DialogInterface.OnClickListener() {
+                        
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri packageUri = Uri.parse("package:" + app.pkgInfo.packageName);
+                            Intent unIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+                            MainActivity.this.startActivity(unIntent);
+                        }
+                    });
+                    
+                    AlertDialog dialog = builder.create();
+                    ActivityInfo activityInfo[] = app.pkgInfo.activities;
+                    
+                    dialog.show();
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(app.pkgInfo.packageName);
+                    if (null == intent) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    }
+                    if (app.isSys) {
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+                    }
+                    
+                    
+                }
             }
-            
+
         });
         log("MainActivity: onCreate exit");
     }
@@ -238,7 +297,7 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             boolean isShowSys = this.getSharedPreferences(PREF_NAME, 0).getBoolean(SHOW_SYS, false);
-            log("optionsItem isShowSys = " + isShowSys );
+            log("optionsItem isShowSys = " + isShowSys);
             isShowSys = !isShowSys;
             Api.applications = null;
             showOrLoadApplications(isShowSys);
