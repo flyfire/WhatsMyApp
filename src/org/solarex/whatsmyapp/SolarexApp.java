@@ -1,6 +1,5 @@
 package org.solarex.whatsmyapp;
 
-import android.R.integer;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
