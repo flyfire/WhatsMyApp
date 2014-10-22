@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WhatsMyApp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+	<string name="loading">Loading...</string>
+	<string name="noapps">No apps installed</string>
+	<string name="show_sys_yes">Show System Applications</string>
+	<string name="show_sys_no">Not Show System Application</string>
+</resources>

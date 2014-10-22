@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading">正在加载...</string>
+    <string name="noapps">尚未安装应用</string>
+    <string name="show_sys_no">不显示系统应用</string>
+    <string name="show_sys_yes">显示系统应用</string>
+</resources>
